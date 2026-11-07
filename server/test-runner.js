@@ -1,5 +1,6 @@
 import './config/loadEnv.js';
 import axios from 'axios';
+import app from './app.js';
 import { validateTargetSyntax } from './services/validatorService.js';
 import { buildConversionPrompt } from './services/promptService.js';
 import { Conversion } from './models/Conversion.js';
@@ -36,6 +37,15 @@ async function runTests() {
   console.log(`========================================${colors.reset}\n`);
 
   await connectDB();
+
+  let serverInstance = null;
+  try {
+    await axios.get(`${BASE_URL}/health`, { timeout: 800 });
+  } catch (err) {
+    serverInstance = await new Promise((resolve) => {
+      const s = app.listen(5000, () => resolve(s));
+    });
+  }
 
   const uniqueSuffix = Date.now();
   let userAToken = '';
@@ -418,6 +428,9 @@ async function runTests() {
   console.log(`  Total Asserts: ${passedCount + failedCount}`);
 
   await mongoose.disconnect();
+  if (serverInstance) {
+    await new Promise((resolve) => serverInstance.close(resolve));
+  }
 
   if (failedCount === 0) {
     console.log(`\n  ${colors.bold}${colors.green}🎉 ALL TESTS PASSED SUCCESSFULLY!${colors.reset}\n`);

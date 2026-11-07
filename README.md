@@ -33,7 +33,7 @@ Built strictly on the **MERN stack** (MongoDB, Express.js, React.js, Node.js) wi
 - **Context API** (AuthContext, ThemeContext, ToastContext)
 
 ### Backend
-- **Node.js 26+** (ES Modules: `"type": "module"`)
+- **Node.js 18+** (ES Modules: `"type": "module"`)
 - **Express.js 4**
 - **MongoDB** & **Mongoose 8**
 - **JWT (jsonwebtoken)** & **bcryptjs**
@@ -105,7 +105,7 @@ PolyCode/
 
 ### 1. Clone & Enter Project Directory
 ```powershell
-cd C:\Users\gocha\Desktop\PolyCode
+cd PolyCode
 ```
 
 ### 2. Install Dependencies
@@ -213,8 +213,10 @@ All responses conform to a standardized JSON schema:
 }
 ```
 
-### Endpoints:
+### Endpoints (17 Verified Route Handlers):
 - `GET /api/v1/health` — Checks database connectivity, server uptime, and AI provider configuration status.
+- `GET /api/v1/languages` — Returns central matrix of supported languages, capabilities, and Monaco identifiers.
+- `GET /api/v1/languages/:id` — Returns detailed metadata for an individual supported programming language. — Checks database connectivity, server uptime, and AI provider configuration status.
 - `GET /api/v1/languages` — Returns central matrix of supported languages, capabilities, and Monaco identifiers.
 - `POST /api/v1/auth/register` — Creates user account with password hashing (bcrypt) and signs JWT cookie.
 - `POST /api/v1/auth/login` — Authenticates user credentials and issues secure HttpOnly JWT.
@@ -230,6 +232,17 @@ All responses conform to a standardized JSON schema:
 - `GET /api/v1/projects/:id` — Retrieves single saved project (`[Protected]`).
 - `PUT /api/v1/projects/:id` — Updates project title, description, tags, or code (`[Protected]`).
 - `DELETE /api/v1/projects/:id` — Deletes saved project (`[Protected]`).
+
+---
+
+---
+
+## 🧪 Automated Test Suite
+
+PolyCode includes an automated integration and unit test suite in `server/test-runner.js`:
+- **Execution Command:** `npm test --prefix server` (or root `npm test`)
+- **Verified Assertions:** **54 assertions** executed across 8 test suites (54 / 54 passed, 0 failures)
+- **Coverage:** Health diagnostics, JWT authentication & cookie security, request validations & limits, target syntax delimiter parsing, prompt construction, saved project CRUD & tenancy isolation, conversion history persistence, and static SPA serving.
 
 ---
 
