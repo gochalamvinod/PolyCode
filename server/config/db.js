@@ -7,9 +7,12 @@ export const connectDB = async () => {
     return conn;
   } catch (error) {
     console.error(`[Database Error] MongoDB connection failed: ${error.message}`);
-    // Do not crash the entire process immediately in development so health check can still report DB status
-    if (process.env.NODE_ENV === 'production') {
+    // Do not crash serverless functions or development so status can still be reported
+    if (process.env.NODE_ENV === 'production' && !process.env.VERCEL) {
       process.exit(1);
     }
+    throw error;
   }
 };
+
+export default connectDB;

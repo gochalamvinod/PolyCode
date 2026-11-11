@@ -20,6 +20,9 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 
+// Trust reverse proxies (Vercel, Render, Nginx) for express-rate-limit and secure cookies
+app.set('trust proxy', 1);
+
 // Security middleware
 app.use(
   helmet({
@@ -49,7 +52,7 @@ app.use(
   cors({
     origin: (origin, callback) => {
       // Allow requests with no origin (e.g. mobile apps, curl, postman)
-      if (!origin || allowedOrigins.includes(origin)) {
+      if (!origin || allowedOrigins.includes(origin) || (process.env.CLIENT_URL && origin.endsWith('.vercel.app'))) {
         return callback(null, true);
       }
       return callback(new Error(`Origin ${origin} not allowed by PolyCode CORS policy`));
