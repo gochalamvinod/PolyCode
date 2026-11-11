@@ -6,6 +6,7 @@ import { generalLimiter } from './middleware/rateLimitMiddleware.js';
 import { errorHandler, notFoundHandler } from './middleware/errorMiddleware.js';
 
 import path from 'path';
+import fs from 'fs';
 import { fileURLToPath } from 'url';
 
 // Route imports
@@ -74,9 +75,29 @@ app.use(cookieParser());
 // Base API route ping
 app.get('/api', (req, res) => {
   res.json({
+    status: 'online',
     name: 'PolyCode API',
     version: '1.0.0',
     description: 'AI-Powered Multi-Language Programming Code Converter'
+  });
+});
+
+// Root ping and graceful fallback if frontend is not served by Express
+app.get('/', (req, res, next) => {
+  const clientDistIndex = path.join(clientDistPath, 'index.html');
+  if (fs.existsSync(clientDistIndex)) {
+    return res.sendFile(clientDistIndex);
+  }
+  return res.json({
+    status: 'online',
+    name: 'PolyCode Backend API',
+    version: '1.0.0',
+    message: 'PolyCode API server is running.',
+    endpoints: {
+      health: '/api/v1/health',
+      languages: '/api/v1/languages',
+      conversions: '/api/v1/conversions'
+    }
   });
 });
 
